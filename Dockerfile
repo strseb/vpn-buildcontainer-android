@@ -44,4 +44,5 @@ VOLUME [ "/opt/ccache" ]
 
 COPY ./ccache.conf /ccache.conf
 COPY ./docker_compile.sh /docker-entrpoint.sh
+RUN chmod +x /docker-entrpoint.sh
 ENTRYPOINT ["/docker-entrpoint.sh"]
