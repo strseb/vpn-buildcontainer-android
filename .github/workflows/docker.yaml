@@ -1,4 +1,4 @@
-name: Demo Push
+name: Publish Images
 
 on:   
   push:
@@ -9,19 +9,16 @@ env:
   IMAGE_NAME: vpn-builder-android
 
 jobs:
-  # Push image to GitHub Packages.
-  # See also https://docs.docker.com/docker-hub/builds/
-  push:
+  qt5_Image:
+    # Creates the vpn-builder-android:latest using the qt5 image
     runs-on: ubuntu-latest
     permissions:
       packages: write
       contents: read
-
     steps:
       - uses: actions/checkout@v2
-
       - name: Build image
-        run: docker build . --file Dockerfile --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
+        run: docker build . --file dockerfile_qt5 --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
 
       - name: Log in to registry
         # This is where you will update the PAT to GITHUB_TOKEN
@@ -39,6 +36,37 @@ jobs:
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
           # Use Docker `latest` tag convention
           [ "$VERSION" == "master" ] && VERSION=latest
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
+  qt6_Image:
+    # Creates the vpn-builder-android:latest using the qt5 image
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    strategy:
+      matrix:
+        arch: ["android_armv7", "android_arm64_v8a", "android_x86", "android_x86_64"]
+        version: ["6.2.1"]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build image
+        run: docker build . --file dockerfile_qt6 --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}" --build-arg QT_VERSION=${{matrix.version}} --build-arg ANDROID_ARCH=${{matrix.arch}}
+
+      - name: Log in to registry
+        # This is where you will update the PAT to GITHUB_TOKEN
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Push image
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
+
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          # Strip git ref prefix from version
+          VERSION=${{matrix.arch}}_${{matrix.version}}
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
