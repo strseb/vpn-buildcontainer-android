@@ -1,6 +1,7 @@
 name: Publish Images
 
-on:   
+on:
+  workflow_dispatch: {}
   push:
     # Publish `master` as Docker `latest` image.
     branches:
