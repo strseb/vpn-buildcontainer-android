@@ -47,7 +47,7 @@ jobs:
     strategy:
       matrix:
         arch: ["android_armv7", "android_arm64_v8a", "android_x86", "android_x86_64"]
-        version: ["6.2.1","6.2.3"]
+        version: ["6.2.1","6.2.3","6.2.4"]
     steps:
       - uses: actions/checkout@v2
       - name: Build image
