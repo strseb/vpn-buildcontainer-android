@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 echo "Copy project over, i/o is slooow"
-rsync -q -av /mnt/client /opt/ --exclude .rcc --exclude .moc --exclude .obj --exclude .tmp --exclude balrog --exclude windows \
+rsync --delete -q -av /mnt/client /opt/ --exclude .rcc --exclude .moc --exclude .obj --exclude .tmp --exclude balrog --exclude windows \
     --exclude tools --exclude .git
 cd /opt/client
 ls
