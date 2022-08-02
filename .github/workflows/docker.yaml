@@ -11,33 +11,6 @@ env:
   LATEST_TARGET: vpn-builder-android:android_universal_5.15.2
 
 jobs:
-  qt5_Image:
-    # Creates the vpn-builder-android:latest using the qt5 image
-    runs-on: ubuntu-latest
-    permissions:
-      packages: write
-      contents: read
-    steps:
-      - uses: actions/checkout@v2
-      - name: Build image
-        run: docker build . --file dockerfile_qt5 --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
-
-      - name: Log in to registry
-        # This is where you will update the PAT to GITHUB_TOKEN
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-      - name: Push image
-        run: |
-          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
-
-          # Change all uppercase to lowercase
-          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          # Strip git ref prefix from version
-          VERSION=android_universal_5.15.2
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
-          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:$VERSION
   qt6_Image:
     # Creates the vpn-builder-android:latest using the qt5 image
     runs-on: ubuntu-latest
@@ -47,7 +20,7 @@ jobs:
     strategy:
       matrix:
         arch: ["android_armv7", "android_arm64_v8a", "android_x86", "android_x86_64"]
-        version: ["6.2.1","6.2.3","6.2.4"]
+        version: ["6.2.4"]
     steps:
       - uses: actions/checkout@v2
       - name: Build image
@@ -69,19 +42,4 @@ jobs:
           echo VERSION=$VERSION
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
-  latest_image:
-    # Creates the vpn-builder-android:latest using the qt5 image
-    runs-on: ubuntu-latest
-    permissions:
-      packages: write
-      contents: read
-    needs: [qt5_Image, qt6_Image]
-    steps:
-      - name: Log in to registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-      - name: Push image
-        run: |
-          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
-          docker pull $LATEST_TARGET
-          docker tag $LATEST_TARGET $IMAGE_ID:latest
-          docker push $IMAGE_ID:latest
+

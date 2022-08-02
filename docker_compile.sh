@@ -9,9 +9,7 @@ git init
 echo "COMPILE!"
 ./scripts/android/package.sh -d -j 22 $QTPATH
 echo "Done, Output is at /mnt/android-build hope you mounted :) "
-cp -rp .tmp/src/android-build/build/intermediates/merged_native_libs/debug/out/lib /mnt/android-build/libs
-cp -rp .tmp/src/android-build/build/outputs/apk/release /mnt/android-build/apk-release
-cp .tmp/src/android-build/mozillavpn.apk  /mnt/android-build/mozillavpn.apk 
+cp -r .tmp/src/android-build/build/outputs  /mnt/android-build/
 
 echo "Stats for ccache:"
 ccache -s
