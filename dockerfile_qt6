@@ -2,12 +2,6 @@ FROM ubuntu:focal
 
 MAINTAINER Sebastian Streich <sstreich@mozilla.com>
 
-# The build will be run as worker, which has no access
-# thus we should prep the folders
-RUN mkdir -p /builds/worker/.cache/go-build &&\
-    chown -R worker:worker /builds/worker/.cache/ &&\
-    chmod -R 777 /builds/worker/ 
-
 #NDK Version:
 ARG NDK_VERSION=android-ndk-r23b
 ARG NDK_FILE=${NDK_VERSION}-linux.zip
