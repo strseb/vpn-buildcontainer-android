@@ -7,7 +7,7 @@ ARG NDK_VERSION=android-ndk-r23b
 ARG NDK_FILE=${NDK_VERSION}-linux.zip
 ARG QT_VERSION=6.2.4
 ARG ANDROID_ARCH=android_armv7
-ARG JDK_VERSION=15
+ARG JDK_VERSION=11
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get -q update &&\
