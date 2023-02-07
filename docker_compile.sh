@@ -7,7 +7,7 @@ cd /opt/client
 ls
 git init
 echo "COMPILE!"
-./scripts/android/package.sh -d -j 22 $QTPATH
+./scripts/android/cmake.sh -d -j 22 $QTPATH
 echo "Done, Output is at /mnt/android-build hope you mounted :) "
 cp -r .tmp/src/android-build/build/outputs  /mnt/android-build/
 
